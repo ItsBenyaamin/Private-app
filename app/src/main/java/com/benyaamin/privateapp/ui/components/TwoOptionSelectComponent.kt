@@ -27,6 +27,7 @@ enum class SelectedOption {
 
 @Composable
 fun TwoOptionSelectComponent(
+    defaultValue: SelectedOption = SelectedOption.None,
     leftSidePainterId: Int,
     rightSidePainterId: Int,
     leftSideIconTint: Color = Color.Black,
@@ -36,7 +37,7 @@ fun TwoOptionSelectComponent(
     onSelectChange: (selectedOption: SelectedOption) -> Unit
 ) {
     var rememberOptionState by remember {
-        mutableStateOf(SelectedOption.None)
+        mutableStateOf(defaultValue)
     }
 
 
