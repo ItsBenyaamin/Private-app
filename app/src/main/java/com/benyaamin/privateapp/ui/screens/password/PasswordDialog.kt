@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalComposeUiApi::class)
-
 package com.benyaamin.privateapp.ui.screens.password
 
 import android.content.Context
@@ -21,6 +19,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +35,7 @@ import com.benyaamin.privateapp.ui.components.TwoOptionSelectComponent
 import com.benyaamin.privateapp.ui.theme.Background
 import com.benyaamin.privateapp.ui.theme.colorPrimary
 
-
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddNewPasswordDialog(
     dialogState: Boolean,
@@ -217,12 +216,193 @@ fun AddNewPasswordDialog(
     }
 }
 
-private fun showToast(context: Context, msg: String) {
-    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun EditPasswordDialog(
+    dialogState: Boolean,
+    viewModel: PasswordViewModel = hiltViewModel(),
+    _password: Password,
+    onDismiss: () -> Unit
+) {
+    if (dialogState) {
+        val context = LocalContext.current
+        val keyboardController = LocalSoftwareKeyboardController.current
+
+        var titleState by remember {
+            mutableStateOf(_password.title)
+        }
+
+        var usernameState by remember {
+            mutableStateOf(_password.username)
+        }
+
+        var passwordState by remember {
+            mutableStateOf(_password.password)
+        }
+
+        var typeState by remember {
+            mutableStateOf(_password.type)
+        }
+
+        Dialog(
+            onDismissRequest = { },
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(Background, RoundedCornerShape(8.dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Edit Password", color = Color.Black, fontSize =18.sp)
+                }
+
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    value = titleState,
+                    onValueChange = { titleState = it },
+                    placeholder = { Text(text = "Enter Title") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            contentDescription = "Enter Title"
+                        )
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    maxLines = 1
+                )
+
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    value = usernameState,
+                    onValueChange = { usernameState = it },
+                    placeholder = { Text(text = "Enter Username") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            contentDescription = "Enter Username"
+                        )
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    maxLines = 1
+                )
+
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    value = passwordState,
+                    onValueChange = { passwordState = it },
+                    placeholder = { Text(text = "Enter Password") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Lock,
+                            contentDescription = "Enter Password"
+                        )
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() }
+                    ),
+                    maxLines = 1
+                )
+
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Password Type:")
+
+                    Spacer(modifier = Modifier.padding(horizontal = 16.dp))
+
+                    val defaultValue = if (_password.type == 0) SelectedOption.LeftSide
+                    else SelectedOption.RightSide
+
+                    TwoOptionSelectComponent(
+                        defaultValue = defaultValue,
+                        leftSidePainterId = R.drawable.ic_phone,
+                        rightSidePainterId = R.drawable.ic_world,
+                        leftSideIconTint = Color.Black,
+                        rightSideIconTint = Color.Black,
+                        tintOnSelection = colorPrimary
+                    ) {
+                        typeState = if (it == SelectedOption.LeftSide)
+                            0
+                        else
+                            1
+                    }
+                }
+
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = {
+                            if (usernameState.isEmpty()) {
+                                showToast(context, "Please enter a Username!")
+                            }else if (passwordState.isEmpty()) {
+                                showToast(context, "Please enter a Password!")
+                            }else if (typeState == -1) {
+                                showToast(context, "Please select password type!")
+                            }else {
+                                _password.apply {
+                                    title = titleState
+                                    username = usernameState
+                                    password = passwordState
+                                    type = typeState
+                                }
+                                viewModel.updatePassword(_password)
+                                onDismiss()
+                            }
+                        },
+                        modifier = Modifier.width(100.dp)
+                    ) {
+                        Text(text = "Edit")
+                    }
+
+                    TextButton(
+                        onClick = {
+                            onDismiss()
+                        },
+                        modifier = Modifier.width(100.dp)
+                    ) {
+                        Text(text = "Cancel")
+                    }
+                }
+            }
+        }
+    }
 }
 
-@Preview
-@Composable
-fun PreviewAddNewPasswordDialog() {
-    AddNewPasswordDialog(true) {}
+private fun showToast(context: Context, msg: String) {
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }

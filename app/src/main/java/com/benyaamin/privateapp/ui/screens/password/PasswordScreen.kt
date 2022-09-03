@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -110,6 +109,28 @@ fun PasswordListItem(
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
+
+    val editDialogState = remember {
+        mutableStateOf(false)
+    }
+    EditPasswordDialog(editDialogState.value, viewModel, password) {
+        editDialogState.value = false
+    }
+
+    val confirmDialogState = remember {
+        mutableStateOf(false)
+    }
+    ConfirmDialog(
+        dialogState = confirmDialogState.value,
+        title = "Delete ${password.title}",
+        onDismiss = {
+            if (it) {
+                viewModel.deletePassword(password)
+            }
+            confirmDialogState.value = false
+        }
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,20 +140,6 @@ fun PasswordListItem(
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
     ) {
-        val confirmDialogState = remember {
-            mutableStateOf(false)
-        }
-        ConfirmDialog(
-            dialogState = confirmDialogState.value,
-            title = "Delete ${password.title}",
-            onDismiss = {
-                if (it) {
-                    viewModel.deletePassword(password)
-                }
-                confirmDialogState.value = false
-            }
-        )
-
         val constraintSet = ConstraintSet {
             val typeIcon = createRefFor("typeIcon")
             val info = createRefFor("info")
@@ -265,7 +272,7 @@ fun PasswordListItem(
                 Icon(
                     modifier = Modifier
                         .noRippleClickable {
-
+                            editDialogState.value = true
                         },
                     imageVector = Icons.Filled.Edit,
                     contentDescription = "Edit the Password",

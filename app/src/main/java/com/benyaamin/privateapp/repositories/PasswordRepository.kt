@@ -2,6 +2,8 @@ package com.benyaamin.privateapp.repositories
 
 import com.benyaamin.privateapp.models.Password
 import com.benyaamin.privateapp.persistence.PasswordDao
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PasswordRepository @Inject constructor(
@@ -9,15 +11,27 @@ class PasswordRepository @Inject constructor(
 ) {
 
     suspend fun getPasswords(): List<Password> {
-        return passwordDao.getPasswords()
+        return withContext(IO) {
+            passwordDao.getPasswords()
+        }
     }
 
     suspend fun insertPassword(password: Password) {
-        passwordDao.insert(password)
+        withContext(IO) {
+            passwordDao.insert(password)
+        }
+    }
+
+    suspend fun updatePassword(password: Password) {
+        withContext(IO) {
+            passwordDao.update(password)
+        }
     }
 
     suspend fun deletePassword(password: Password) {
-        passwordDao.delete(password)
+        withContext(IO) {
+            passwordDao.delete(password)
+        }
     }
 
 }

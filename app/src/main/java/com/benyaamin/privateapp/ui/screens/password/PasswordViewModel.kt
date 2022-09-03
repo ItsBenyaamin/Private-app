@@ -31,6 +31,11 @@ class PasswordViewModel @Inject constructor(
         reloadList()
     }
 
+    fun updatePassword(password: Password) = viewModelScope.launch {
+        passwordRepository.updatePassword(password)
+        reloadList()
+    }
+
     fun deletePassword(password: Password) = viewModelScope.launch {
         passwordRepository.deletePassword(password)
         reloadList()
