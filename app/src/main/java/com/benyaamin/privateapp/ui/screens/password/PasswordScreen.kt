@@ -2,14 +2,18 @@ package com.benyaamin.privateapp.ui.screens.password
 
 import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +23,10 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -40,8 +47,22 @@ fun PasswordScreen(
     navigator: DestinationsNavigator,
     viewModel: PasswordViewModel = hiltViewModel()
 ) {
+    val rememberAppbarState = remember {
+        mutableStateOf(PasswordAppbarState.Default)
+    }
+
     Scaffold(
-        topBar = { PasswordTopAppBar() },
+        topBar = {
+            if (rememberAppbarState.value == PasswordAppbarState.Default) {
+                PasswordDefaultTopAppBar {
+                    rememberAppbarState.value = PasswordAppbarState.Search
+                }
+            }else {
+                PasswordSearchTopAppBar(viewModel) {
+                    rememberAppbarState.value = PasswordAppbarState.Default
+                }
+            }
+        },
         floatingActionButton = { Fab() },
         content = {
             PasswordsList(viewModel)
@@ -50,20 +71,100 @@ fun PasswordScreen(
 }
 
 @Composable
-fun PasswordTopAppBar() {
+fun PasswordDefaultTopAppBar(
+    onSearchClicked: () -> Unit
+) {
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     TopAppBar {
-        Icon(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .noRippleClickable {
-                    onBackPressedDispatcherOwner?.onBackPressedDispatcher?.onBackPressed()
-                },
-            painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_24),
-            contentDescription = "back"
-        )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row() {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 16.dp, 0.dp, 0.dp, 0.dp)
+                        .noRippleClickable {
+                            onBackPressedDispatcherOwner?.onBackPressedDispatcher?.onBackPressed()
+                        },
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_24),
+                    contentDescription = "back"
+                )
 
-        Text(text = "Passwords", style = Typography.h1)
+                Text(text = "Passwords", style = Typography.h1)
+            }
+
+            Icon(
+                modifier = Modifier
+                    .padding(start = 8.dp, 0.dp, 16.dp, 0.dp)
+                    .noRippleClickable {
+                        onSearchClicked()
+                    },
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Search"
+            )
+        }
+    }
+}
+
+@Composable
+fun PasswordSearchTopAppBar(
+    viewModel: PasswordViewModel,
+    onCloseClicked: () -> Unit
+) {
+    val rememberSearchState = remember {
+        mutableStateOf("")
+    }
+    TopAppBar {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            TextField(
+                modifier = Modifier.fillMaxWidth(.9f),
+                value = rememberSearchState.value,
+                onValueChange = {
+                    rememberSearchState.value = it
+                    viewModel.searchWith(it)
+                },
+                label = { Text(text = "Search for password...") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search",
+                        tint = Color.White
+                    )
+                },
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        viewModel.searchWith(rememberSearchState.value)
+                    }
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = Color.White,
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White,
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.White,
+                    unfocusedIndicatorColor = Color.White
+                )
+            )
+
+            Icon(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .noRippleClickable {
+                        viewModel.reloadList()
+                        onCloseClicked()
+                    },
+                imageVector = Icons.Filled.Close,
+                contentDescription = "Search",
+                tint = Color.White
+            )
+        }
     }
 }
 

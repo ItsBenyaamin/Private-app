@@ -34,4 +34,10 @@ class PasswordRepository @Inject constructor(
         }
     }
 
+    suspend fun search(query: String): List<Password> {
+        return withContext(IO) {
+            passwordDao.search("%$query%")
+        }
+    }
+
 }

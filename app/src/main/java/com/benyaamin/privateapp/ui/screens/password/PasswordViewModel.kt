@@ -41,4 +41,9 @@ class PasswordViewModel @Inject constructor(
         reloadList()
     }
 
+    fun searchWith(query: String) = viewModelScope.launch {
+        val result = passwordRepository.search(query)
+        _passwordsFlow.emit(result)
+    }
+
 }

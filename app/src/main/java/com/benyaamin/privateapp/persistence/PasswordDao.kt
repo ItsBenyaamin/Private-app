@@ -12,6 +12,9 @@ interface PasswordDao {
     @Query("select * from password")
     suspend fun getPasswords(): List<Password>
 
+    @Query("select * from password where title like :query")
+    suspend fun search(query: String): List<Password>
+
     @Query("select * from password where id = :passwordId")
     suspend fun getPassword(passwordId: Int): Password
 
