@@ -102,7 +102,7 @@ fun MyTopAppBar() {
 fun MyCards(navigator: DestinationsNavigator) {
     val mItems = arrayListOf(
         HomeItems(stringResource(R.string.passwords), R.drawable.ic_password),
-        HomeItems(stringResource(R.string.credit_card), R.drawable.ic_credit_card),
+        HomeItems(stringResource(R.string.tasks), R.drawable.ic_credit_card),
         HomeItems(stringResource(R.string.notes), R.drawable.ic_note),
         HomeItems(stringResource(R.string.accounting), R.drawable.ic_accounting),
     )

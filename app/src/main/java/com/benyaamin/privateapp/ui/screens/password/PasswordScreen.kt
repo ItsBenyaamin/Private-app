@@ -2,10 +2,6 @@ package com.benyaamin.privateapp.ui.screens.password
 
 import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +22,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -126,7 +121,7 @@ fun PasswordSearchTopAppBar(
                     rememberSearchState.value = it
                     viewModel.searchWith(it)
                 },
-                label = { Text(text = "Search for password...") },
+                label = { Text(text = "Search for titles...") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search
@@ -211,16 +206,18 @@ fun PasswordListItem(
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
 
-    val editDialogState = remember {
+    var editDialogState by remember {
         mutableStateOf(false)
     }
-    EditPasswordDialog(editDialogState.value, viewModel, password) {
-        editDialogState.value = false
+
+    EditPasswordDialog(editDialogState, viewModel, password) {
+        editDialogState = false
     }
 
     val confirmDialogState = remember {
         mutableStateOf(false)
     }
+
     ConfirmDialog(
         dialogState = confirmDialogState.value,
         title = "Delete ${password.title}",
@@ -373,7 +370,7 @@ fun PasswordListItem(
                 Icon(
                     modifier = Modifier
                         .noRippleClickable {
-                            editDialogState.value = true
+                            editDialogState = true
                         },
                     imageVector = Icons.Filled.Edit,
                     contentDescription = "Edit the Password",
