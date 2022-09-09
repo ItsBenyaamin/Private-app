@@ -19,8 +19,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -31,6 +33,7 @@ import com.benyaamin.privateapp.models.Password
 import com.benyaamin.privateapp.ui.components.SelectedOption
 import com.benyaamin.privateapp.ui.components.TwoOptionSelectComponent
 import com.benyaamin.privateapp.ui.theme.Background
+import com.benyaamin.privateapp.ui.theme.PrivateTheme
 import com.benyaamin.privateapp.ui.theme.colorPrimary
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -67,146 +70,150 @@ fun AddNewPasswordDialog(
                 dismissOnClickOutside = false
             )
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(Background, RoundedCornerShape(8.dp))
-            ) {
-                Box(
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
-                    contentAlignment = Alignment.Center
+                        .wrapContentHeight()
+                        .background(Background, RoundedCornerShape(8.dp))
                 ) {
-                    Text(text = "Add New Password", color = Color.Black, fontSize =18.sp)
-                }
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    value = titleState,
-                    onValueChange = { titleState = it },
-                    placeholder = { Text(text = "Enter Title") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            contentDescription = "Enter Title"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    maxLines = 1
-                )
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    value = usernameState,
-                    onValueChange = { usernameState = it },
-                    placeholder = { Text(text = "Enter Username") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            contentDescription = "Enter Username"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    maxLines = 1
-                )
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    value = passwordState,
-                    onValueChange = { passwordState = it },
-                    placeholder = { Text(text = "Enter Password") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = "Enter Password"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { keyboardController?.hide() }
-                    ),
-                    maxLines = 1
-                )
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Password Type:")
-
-                    Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-
-                    TwoOptionSelectComponent(
-                        leftSidePainterId = R.drawable.ic_phone,
-                        rightSidePainterId = R.drawable.ic_world,
-                        leftSideIconTint = Color.Black,
-                        rightSideIconTint = Color.Black,
-                        tintOnSelection = colorPrimary
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        typeState = if (it == SelectedOption.LeftSide)
-                            0
-                        else
-                            1
+                        Text(text = "Add New Password", color = Color.Black, fontSize = 18.sp)
                     }
-                }
 
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = {
-                            if (usernameState.isEmpty()) {
-                                showToast(context, "Please enter a Username!")
-                            }else if (passwordState.isEmpty()) {
-                                showToast(context, "Please enter a Password!")
-                            }else if (typeState == -1) {
-                                showToast(context, "Please select password type!")
-                            }else {
-                                viewModel.addNewPassword(Password(
-                                    titleState,
-                                    usernameState,
-                                    passwordState,
-                                    typeState
-                                ))
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        value = titleState,
+                        onValueChange = { titleState = it },
+                        placeholder = { Text(text = "Enter Title") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.AccountBox,
+                                contentDescription = "Enter Title"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        value = usernameState,
+                        onValueChange = { usernameState = it },
+                        placeholder = { Text(text = "Enter Username") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.AccountBox,
+                                contentDescription = "Enter Username"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        value = passwordState,
+                        onValueChange = { passwordState = it },
+                        placeholder = { Text(text = "Enter Password") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = "Enter Password"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = { keyboardController?.hide() }
+                        ),
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Password Type:")
+
+                        Spacer(modifier = Modifier.padding(horizontal = 16.dp))
+
+                        TwoOptionSelectComponent(
+                            leftSidePainterId = R.drawable.ic_phone,
+                            rightSidePainterId = R.drawable.ic_world,
+                            leftSideIconTint = Color.Black,
+                            rightSideIconTint = Color.Black,
+                            tintOnSelection = colorPrimary
+                        ) {
+                            typeState = if (it == SelectedOption.LeftSide)
+                                0
+                            else
+                                1
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = {
+                                if (usernameState.isEmpty()) {
+                                    showToast(context, "Please enter a Username!")
+                                } else if (passwordState.isEmpty()) {
+                                    showToast(context, "Please enter a Password!")
+                                } else if (typeState == -1) {
+                                    showToast(context, "Please select password type!")
+                                } else {
+                                    viewModel.addNewPassword(
+                                        Password(
+                                            titleState,
+                                            usernameState,
+                                            passwordState,
+                                            typeState
+                                        )
+                                    )
+                                    onDismiss()
+                                }
+                            },
+                            modifier = Modifier.width(100.dp)
+                        ) {
+                            Text(text = "OK")
+                        }
+
+                        TextButton(
+                            onClick = {
                                 onDismiss()
-                            }
-                        },
-                        modifier = Modifier.width(100.dp)
-                    ) {
-                        Text(text = "OK")
-                    }
-
-                    TextButton(
-                        onClick = {
-                            onDismiss()
-                        },
-                        modifier = Modifier.width(100.dp)
-                    ) {
-                        Text(text = "Cancel")
+                            },
+                            modifier = Modifier.width(100.dp)
+                        ) {
+                            Text(text = "Cancel")
+                        }
                     }
                 }
             }
@@ -249,151 +256,153 @@ fun EditPasswordDialog(
                 dismissOnClickOutside = false
             )
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(Background, RoundedCornerShape(8.dp))
-            ) {
-                Box(
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
-                    contentAlignment = Alignment.Center
+                        .wrapContentHeight()
+                        .background(Background, RoundedCornerShape(8.dp))
                 ) {
-                    Text(text = "Edit Password", color = Color.Black, fontSize =18.sp)
-                }
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    value = titleState,
-                    onValueChange = { titleState = it },
-                    placeholder = { Text(text = "Enter Title") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            contentDescription = "Enter Title"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    maxLines = 1
-                )
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    value = usernameState,
-                    onValueChange = { usernameState = it },
-                    placeholder = { Text(text = "Enter Username") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            contentDescription = "Enter Username"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    maxLines = 1
-                )
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    value = passwordState,
-                    onValueChange = { passwordState = it },
-                    placeholder = { Text(text = "Enter Password") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = "Enter Password"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { keyboardController?.hide() }
-                    ),
-                    maxLines = 1
-                )
-
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Password Type:")
-
-                    Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-
-                    val defaultValue = if (_password.type == 0) SelectedOption.LeftSide
-                    else SelectedOption.RightSide
-
-                    TwoOptionSelectComponent(
-                        defaultValue = defaultValue,
-                        leftSidePainterId = R.drawable.ic_phone,
-                        rightSidePainterId = R.drawable.ic_world,
-                        leftSideIconTint = Color.Black,
-                        rightSideIconTint = Color.Black,
-                        tintOnSelection = colorPrimary
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        typeState = if (it == SelectedOption.LeftSide)
-                            0
-                        else
-                            1
+                        Text(text = "Edit Password", color = Color.Black, fontSize =18.sp)
                     }
-                }
 
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = {
-                            if (usernameState.isEmpty()) {
-                                showToast(context, "Please enter a Username!")
-                            }else if (passwordState.isEmpty()) {
-                                showToast(context, "Please enter a Password!")
-                            }else if (typeState == -1) {
-                                showToast(context, "Please select password type!")
-                            }else {
-                                _password.apply {
-                                    title = titleState
-                                    username = usernameState
-                                    password = passwordState
-                                    type = typeState
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        value = titleState,
+                        onValueChange = { titleState = it },
+                        placeholder = { Text(text = "Enter Title") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.AccountBox,
+                                contentDescription = "Enter Title"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        value = usernameState,
+                        onValueChange = { usernameState = it },
+                        placeholder = { Text(text = "Enter Username") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.AccountBox,
+                                contentDescription = "Enter Username"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        value = passwordState,
+                        onValueChange = { passwordState = it },
+                        placeholder = { Text(text = "Enter Password") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = "Enter Password"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = { keyboardController?.hide() }
+                        ),
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Password Type:")
+
+                        Spacer(modifier = Modifier.padding(horizontal = 16.dp))
+
+                        val defaultValue = if (_password.type == 0) SelectedOption.LeftSide
+                        else SelectedOption.RightSide
+
+                        TwoOptionSelectComponent(
+                            defaultValue = defaultValue,
+                            leftSidePainterId = R.drawable.ic_phone,
+                            rightSidePainterId = R.drawable.ic_world,
+                            leftSideIconTint = Color.Black,
+                            rightSideIconTint = Color.Black,
+                            tintOnSelection = colorPrimary
+                        ) {
+                            typeState = if (it == SelectedOption.LeftSide)
+                                0
+                            else
+                                1
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = {
+                                if (usernameState.isEmpty()) {
+                                    showToast(context, "Please enter a Username!")
+                                }else if (passwordState.isEmpty()) {
+                                    showToast(context, "Please enter a Password!")
+                                }else if (typeState == -1) {
+                                    showToast(context, "Please select password type!")
+                                }else {
+                                    _password.apply {
+                                        title = titleState
+                                        username = usernameState
+                                        password = passwordState
+                                        type = typeState
+                                    }
+                                    viewModel.updatePassword(_password)
+                                    onDismiss()
                                 }
-                                viewModel.updatePassword(_password)
-                                onDismiss()
-                            }
-                        },
-                        modifier = Modifier.width(100.dp)
-                    ) {
-                        Text(text = "Edit")
-                    }
+                            },
+                            modifier = Modifier.width(100.dp)
+                        ) {
+                            Text(text = "Edit")
+                        }
 
-                    TextButton(
-                        onClick = {
-                            onDismiss()
-                        },
-                        modifier = Modifier.width(100.dp)
-                    ) {
-                        Text(text = "Cancel")
+                        TextButton(
+                            onClick = {
+                                onDismiss()
+                            },
+                            modifier = Modifier.width(100.dp)
+                        ) {
+                            Text(text = "Cancel")
+                        }
                     }
                 }
             }
