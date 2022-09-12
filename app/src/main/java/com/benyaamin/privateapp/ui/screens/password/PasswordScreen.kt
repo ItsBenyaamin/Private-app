@@ -30,12 +30,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.benyaamin.privateapp.R
 import com.benyaamin.privateapp.extensions.noRippleClickable
 import com.benyaamin.privateapp.models.Password
+import com.benyaamin.privateapp.ui.components.AppbarState
 import com.benyaamin.privateapp.ui.components.ConfirmDialog
 import com.benyaamin.privateapp.ui.theme.Typography
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.benyaamin.privateapp.ui.theme.colorPrimary
-import com.benyaamin.privateapp.util.AppbarState
+
 
 @Destination
 @Composable
