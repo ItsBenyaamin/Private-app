@@ -40,7 +40,7 @@ import com.benyaamin.privateapp.ui.theme.colorPrimary
 @Composable
 fun AddNewPasswordDialog(
     dialogState: Boolean,
-    viewModel: PasswordViewModel = hiltViewModel(),
+    viewModel: PasswordViewModel,
     onDismiss: () -> Unit
 ) {
     if (dialogState) {

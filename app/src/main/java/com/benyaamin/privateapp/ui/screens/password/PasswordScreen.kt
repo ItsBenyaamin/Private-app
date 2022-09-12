@@ -58,7 +58,7 @@ fun PasswordScreen(
                 }
             }
         },
-        floatingActionButton = { Fab() },
+        floatingActionButton = { Fab(viewModel) },
         content = {
             PasswordsList(viewModel)
         }
@@ -164,11 +164,13 @@ fun PasswordSearchTopAppBar(
 }
 
 @Composable
-fun Fab() {
+fun Fab(
+    viewModel: PasswordViewModel
+) {
     val dialogState = remember {
         mutableStateOf(false)
     }
-    AddNewPasswordDialog(dialogState.value) {
+    AddNewPasswordDialog(dialogState.value, viewModel) {
         dialogState.value = false
     }
     FloatingActionButton(onClick = { dialogState.value = true }, backgroundColor = colorPrimary) {
