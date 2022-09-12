@@ -35,6 +35,7 @@ import com.benyaamin.privateapp.ui.theme.Typography
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.benyaamin.privateapp.ui.theme.colorPrimary
+import com.benyaamin.privateapp.util.AppbarState
 
 @Destination
 @Composable
@@ -43,18 +44,18 @@ fun PasswordScreen(
     viewModel: PasswordViewModel = hiltViewModel()
 ) {
     val rememberAppbarState = remember {
-        mutableStateOf(PasswordAppbarState.Default)
+        mutableStateOf(AppbarState.Default)
     }
 
     Scaffold(
         topBar = {
-            if (rememberAppbarState.value == PasswordAppbarState.Default) {
+            if (rememberAppbarState.value == AppbarState.Default) {
                 PasswordDefaultTopAppBar {
-                    rememberAppbarState.value = PasswordAppbarState.Search
+                    rememberAppbarState.value = AppbarState.Search
                 }
             }else {
                 PasswordSearchTopAppBar(viewModel) {
-                    rememberAppbarState.value = PasswordAppbarState.Default
+                    rememberAppbarState.value = AppbarState.Default
                 }
             }
         },
