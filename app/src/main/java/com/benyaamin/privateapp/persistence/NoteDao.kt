@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.benyaamin.privateapp.models.Note
 
 @Dao
@@ -17,6 +18,9 @@ interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(note: Note)
+
+    @Update
+    suspend fun update(note: Note)
 
     @Delete
     suspend fun delete(note: Note)
