@@ -2,6 +2,7 @@
     <string name="app_name">Private</string>
     <string name="passwords">Passwords</string>
     <string name="tasks">Tasks</string>
+    <string name="todos">Todos</string>
     <string name="notes">Notes</string>
     <string name="accounting">Accounting</string>
     <string name="title_activity_passwords">PasswordsActivity</string>
