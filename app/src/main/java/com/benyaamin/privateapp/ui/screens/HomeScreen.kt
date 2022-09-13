@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.benyaamin.privateapp.R
+import com.benyaamin.privateapp.ui.screens.destinations.NoteScreenDestination
 import com.benyaamin.privateapp.ui.screens.destinations.PasswordScreenDestination
 import com.benyaamin.privateapp.ui.theme.*
 import com.ramcosta.composedestinations.annotation.Destination
@@ -121,7 +122,7 @@ fun MyCards(navigator: DestinationsNavigator) {
                                    when(index) {
                                        0 -> navigator.navigate(PasswordScreenDestination())
                                        1 -> navigator.navigate(PasswordScreenDestination())
-                                       2 -> navigator.navigate(PasswordScreenDestination())
+                                       2 -> navigator.navigate(NoteScreenDestination())
                                        3 -> navigator.navigate(PasswordScreenDestination())
                                    }
                         },
