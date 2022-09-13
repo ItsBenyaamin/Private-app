@@ -7,47 +7,41 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benyaamin.privateapp.extensions.noRippleClickable
 import com.benyaamin.privateapp.models.Note
 import com.benyaamin.privateapp.ui.components.DefaultTopAppBar
 import com.benyaamin.privateapp.ui.screens.destinations.NoteScreenDestination
-import com.benyaamin.privateapp.ui.theme.PrivateTheme
 import com.benyaamin.privateapp.ui.theme.colorPrimary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun NewNoteScreen(
+fun EditNoteScreen(
     navigator: DestinationsNavigator,
-    viewModel: NewNoteViewModel = hiltViewModel()
+    viewModel: EditNoteViewModel = hiltViewModel(),
+    note: Note
 ) {
     val backHandler = LocalOnBackPressedDispatcherOwner.current
     var titleState by remember {
-        mutableStateOf("")
+        mutableStateOf(note.title)
     }
     var contentState by remember {
-        mutableStateOf("")
+        mutableStateOf(note.content)
     }
     var favoriteState by remember {
-        mutableStateOf(false)
+        mutableStateOf(note.isFavorite)
     }
 
     Scaffold(
         topBar = {
             DefaultTopAppBar(
-                title = "New Note",
+                title = "Edit Note",
                 onBackClick = { backHandler?.onBackPressedDispatcher?.onBackPressed() },
                 icon = {
                     Row {
@@ -64,17 +58,15 @@ fun NewNoteScreen(
                             contentDescription = "Done",
                             tint = Color.White
                         )
-                        
+
                         Icon(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .noRippleClickable {
-                                    val note = Note(
-                                        titleState,
-                                        contentState,
-                                        favoriteState
-                                    )
-                                    viewModel.newNote(note)
+                                    note.title = titleState
+                                    note.content = contentState
+                                    note.isFavorite = favoriteState
+                                    viewModel.updateNote(note)
                                     navigator.navigate(NoteScreenDestination)
                                 },
                             imageVector = Icons.Filled.Done,

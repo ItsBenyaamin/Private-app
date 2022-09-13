@@ -26,11 +26,6 @@ class NotesViewModel @Inject constructor(
         _notesFlow.emit(result)
     }
 
-    fun updateNote(note: Note) = viewModelScope.launch {
-        noteRepository.updateNote(note)
-        reloadList()
-    }
-
     fun deleteNote(note: Note) = viewModelScope.launch {
         noteRepository.deleteNote(note)
         reloadList()
