@@ -3,6 +3,7 @@ package com.benyaamin.privateapp.di
 import android.content.Context
 import androidx.room.Room
 import com.benyaamin.privateapp.persistence.AppDatabase
+import com.benyaamin.privateapp.persistence.NoteDao
 import com.benyaamin.privateapp.persistence.PasswordDao
 import dagger.Module
 import dagger.Provides
@@ -27,6 +28,12 @@ object PersistenceModule {
     @Singleton
     fun providePasswordDao(appDatabase: AppDatabase): PasswordDao {
         return appDatabase.passwordDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNoteDao(appDatabase: AppDatabase): NoteDao {
+        return appDatabase.noteDao()
     }
 
 }
