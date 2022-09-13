@@ -51,7 +51,8 @@ fun ToolbarWithSearch(
                         modifier = Modifier
                             .padding(start = 16.dp, 0.dp, 16.dp, 0.dp)
                             .noRippleClickable {
-                                softwareKeyboardController?.hide()
+                                state.value = AppbarState.Search
+                                softwareKeyboardController?.show()
                             },
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Search"
@@ -61,7 +62,10 @@ fun ToolbarWithSearch(
         else
             SearchTopAppBar(
                 onQueryChanged = onSearchQueryChanged,
-                onCloseClicked = { state.value = AppbarState.Default }
+                onCloseClicked = { 
+                    state.value = AppbarState.Default
+                    softwareKeyboardController?.hide()
+                }
             )
     }
 
