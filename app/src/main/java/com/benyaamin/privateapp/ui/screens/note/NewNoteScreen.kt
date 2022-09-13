@@ -31,7 +31,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun NewNoteScreen(
     navigator: DestinationsNavigator,
-    viewModel: NotesViewModel = hiltViewModel()
+    viewModel: NewNoteViewModel = hiltViewModel()
 ) {
     val backHandler = LocalOnBackPressedDispatcherOwner.current
     var titleState by remember {
