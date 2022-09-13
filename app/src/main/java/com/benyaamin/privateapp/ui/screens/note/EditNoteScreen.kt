@@ -15,17 +15,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.benyaamin.privateapp.extensions.noRippleClickable
 import com.benyaamin.privateapp.models.Note
 import com.benyaamin.privateapp.ui.components.DefaultTopAppBar
-import com.benyaamin.privateapp.ui.screens.destinations.NoteScreenDestination
 import com.benyaamin.privateapp.ui.theme.colorPrimary
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination
 @Composable
 fun EditNoteScreen(
-    navigator: DestinationsNavigator,
-    viewModel: EditNoteViewModel = hiltViewModel(),
-    note: Note
+    resultNavigator: ResultBackNavigator<Boolean>,
+    note: Note,
+    viewModel: EditNoteViewModel = hiltViewModel()
 ) {
     val backHandler = LocalOnBackPressedDispatcherOwner.current
     var titleState by remember {
@@ -67,7 +66,7 @@ fun EditNoteScreen(
                                     note.content = contentState
                                     note.isFavorite = favoriteState
                                     viewModel.updateNote(note)
-                                    navigator.navigate(NoteScreenDestination)
+                                    resultNavigator.navigateBack(true)
                                 },
                             imageVector = Icons.Filled.Done,
                             contentDescription = "Done",

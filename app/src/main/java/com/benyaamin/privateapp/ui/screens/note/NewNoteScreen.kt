@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -15,22 +14,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benyaamin.privateapp.extensions.noRippleClickable
 import com.benyaamin.privateapp.models.Note
 import com.benyaamin.privateapp.ui.components.DefaultTopAppBar
-import com.benyaamin.privateapp.ui.screens.destinations.NoteScreenDestination
-import com.benyaamin.privateapp.ui.theme.PrivateTheme
 import com.benyaamin.privateapp.ui.theme.colorPrimary
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination
 @Composable
 fun NewNoteScreen(
-    navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: NewNoteViewModel = hiltViewModel()
 ) {
     val backHandler = LocalOnBackPressedDispatcherOwner.current
@@ -70,12 +66,12 @@ fun NewNoteScreen(
                                 .padding(horizontal = 16.dp)
                                 .noRippleClickable {
                                     val note = Note(
-                                        titleState,
-                                        contentState,
-                                        favoriteState
+                                        title = titleState,
+                                        content = contentState,
+                                        isFavorite = favoriteState
                                     )
                                     viewModel.newNote(note)
-                                    navigator.navigate(NoteScreenDestination)
+                                    resultNavigator.navigateBack(true)
                                 },
                             imageVector = Icons.Filled.Done,
                             contentDescription = "Done",
