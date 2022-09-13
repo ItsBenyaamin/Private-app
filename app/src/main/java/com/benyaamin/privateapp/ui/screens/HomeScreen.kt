@@ -103,7 +103,6 @@ fun MyTopAppBar() {
 fun MyCards(navigator: DestinationsNavigator) {
     val mItems = arrayListOf(
         HomeItems(stringResource(R.string.passwords), R.drawable.ic_password),
-        HomeItems(stringResource(R.string.accounting), R.drawable.ic_accounting),
         HomeItems(stringResource(R.string.notes), R.drawable.ic_note),
         HomeItems(stringResource(R.string.todos), R.drawable.ic_todos),
     )
@@ -121,9 +120,8 @@ fun MyCards(navigator: DestinationsNavigator) {
                         .clickable {
                                    when(index) {
                                        0 -> navigator.navigate(PasswordScreenDestination())
-                                       1 -> navigator.navigate(PasswordScreenDestination())
                                        2 -> navigator.navigate(NoteScreenDestination())
-                                       3 -> navigator.navigate(PasswordScreenDestination())
+                                       3 -> {}
                                    }
                         },
                 ) {
@@ -146,12 +144,4 @@ fun MyCards(navigator: DestinationsNavigator) {
                 }
             }
         })
-}
-
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    PrivateTheme {
-//        HomeScreen()
-    }
 }
