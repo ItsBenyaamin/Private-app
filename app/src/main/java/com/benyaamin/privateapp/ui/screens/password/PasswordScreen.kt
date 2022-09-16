@@ -32,6 +32,8 @@ import com.benyaamin.privateapp.extensions.noRippleClickable
 import com.benyaamin.privateapp.models.Password
 import com.benyaamin.privateapp.ui.components.AppbarState
 import com.benyaamin.privateapp.ui.components.ConfirmDialog
+import com.benyaamin.privateapp.ui.components.Fab
+import com.benyaamin.privateapp.ui.components.ToolbarWithSearch
 import com.benyaamin.privateapp.ui.theme.Typography
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -44,144 +46,39 @@ fun PasswordScreen(
     navigator: DestinationsNavigator,
     viewModel: PasswordViewModel = hiltViewModel()
 ) {
-    val rememberAppbarState = remember {
-        mutableStateOf(AppbarState.Default)
+    var dialogState by remember {
+        mutableStateOf(false)
+    }
+
+    AddNewPasswordDialog(dialogState, viewModel) {
+        dialogState = false
     }
 
     Scaffold(
         topBar = {
-            if (rememberAppbarState.value == AppbarState.Default) {
-                PasswordDefaultTopAppBar {
-                    rememberAppbarState.value = AppbarState.Search
+            ToolbarWithSearch(
+                title = "Passwords",
+                onBackClick = {
+                    navigator.navigateUp()
+                },
+                onSearchQueryChanged = {
+                    viewModel.searchWith(it)
                 }
-            }else {
-                PasswordSearchTopAppBar(viewModel) {
-                    rememberAppbarState.value = AppbarState.Default
-                }
+            )
+
+        },
+        floatingActionButton = {
+            Fab(
+                contentDescription = "Add Password",
+                icon = Icons.Filled.Add
+            ) {
+                dialogState = true
             }
         },
-        floatingActionButton = { Fab(viewModel) },
         content = {
             PasswordsList(viewModel)
         }
     )
-}
-
-@Composable
-fun PasswordDefaultTopAppBar(
-    onSearchClicked: () -> Unit
-) {
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
-    TopAppBar {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Row() {
-                Icon(
-                    modifier = Modifier
-                        .padding(start = 16.dp, 0.dp, 0.dp, 0.dp)
-                        .noRippleClickable {
-                            onBackPressedDispatcherOwner?.onBackPressedDispatcher?.onBackPressed()
-                        },
-                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_24),
-                    contentDescription = "back"
-                )
-
-                Text(text = "Passwords", style = Typography.h1)
-            }
-
-            Icon(
-                modifier = Modifier
-                    .padding(start = 8.dp, 0.dp, 16.dp, 0.dp)
-                    .noRippleClickable {
-                        onSearchClicked()
-                    },
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search"
-            )
-        }
-    }
-}
-
-@Composable
-fun PasswordSearchTopAppBar(
-    viewModel: PasswordViewModel,
-    onCloseClicked: () -> Unit
-) {
-    val rememberSearchState = remember {
-        mutableStateOf("")
-    }
-    TopAppBar {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(.9f),
-                value = rememberSearchState.value,
-                onValueChange = {
-                    rememberSearchState.value = it
-                    viewModel.searchWith(it)
-                },
-                label = { Text(text = "Search for titles...") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search
-                ),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "Search",
-                        tint = Color.White
-                    )
-                },
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        viewModel.searchWith(rememberSearchState.value)
-                    }
-                ),
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White,
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.White,
-                    unfocusedIndicatorColor = Color.White
-                )
-            )
-
-            Icon(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .noRippleClickable {
-                        viewModel.reloadList()
-                        onCloseClicked()
-                    },
-                imageVector = Icons.Filled.Close,
-                contentDescription = "Search",
-                tint = Color.White
-            )
-        }
-    }
-}
-
-@Composable
-fun Fab(
-    viewModel: PasswordViewModel
-) {
-    val dialogState = remember {
-        mutableStateOf(false)
-    }
-    AddNewPasswordDialog(dialogState.value, viewModel) {
-        dialogState.value = false
-    }
-    FloatingActionButton(onClick = { dialogState.value = true }, backgroundColor = colorPrimary) {
-        Icon(
-            imageVector = Icons.Filled.Add,
-            contentDescription = "Add Password",
-            tint = Color.White
-        )
-    }
 }
 
 @Composable
