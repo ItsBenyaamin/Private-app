@@ -9,14 +9,14 @@ import com.benyaamin.privateapp.ui.theme.colorPrimary
 
 @Composable
 fun Fab(
-    title: String,
+    contentDescription: String = "",
     icon: ImageVector,
     onFabClick: () -> Unit
 ) {
     FloatingActionButton(onClick = { onFabClick() }, backgroundColor = colorPrimary) {
         Icon(
             imageVector = icon,
-            contentDescription = title,
+            contentDescription = contentDescription,
             tint = Color.White
         )
     }
