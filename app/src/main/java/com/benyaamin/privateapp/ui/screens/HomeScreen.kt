@@ -109,7 +109,7 @@ fun MyCards(navigator: DestinationsNavigator) {
     LazyVerticalGrid(modifier = Modifier.fillMaxSize().padding(0.dp, 24.dp, 0.dp, 0.dp),
         columns = GridCells.Adaptive(110.dp),
         content = {
-            items(4) { index ->
+            items(3) { index ->
                 Card(
                     Modifier
                         .padding(8.dp)
@@ -120,8 +120,8 @@ fun MyCards(navigator: DestinationsNavigator) {
                         .clickable {
                                    when(index) {
                                        0 -> navigator.navigate(PasswordScreenDestination())
-                                       2 -> navigator.navigate(NoteScreenDestination())
-                                       3 -> {}
+                                       1 -> navigator.navigate(NoteScreenDestination())
+                                       2 -> {}
                                    }
                         },
                 ) {
