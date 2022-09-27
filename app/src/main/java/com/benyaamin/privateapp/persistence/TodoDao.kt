@@ -24,10 +24,10 @@ interface TodoDao {
 
     @Update
     suspend fun updateTodoGroup(group: TodoGroup)
-    
 
-    @Query("select * from todo")
-    suspend fun getTodos(): List<Todo>
+
+    @Query("select * from todo where groupId = :groupId")
+    suspend fun getTodos(groupId: Int): List<Todo>
 
     @Insert
     suspend fun insertTodo(todo: Todo)
