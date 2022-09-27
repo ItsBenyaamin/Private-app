@@ -12,4 +12,5 @@ import com.benyaamin.privateapp.models.Password
 abstract class AppDatabase : RoomDatabase() {
     abstract fun passwordDao(): PasswordDao
     abstract fun noteDao(): NoteDao
+    abstract fun todoDao(): TodoDao
 }
